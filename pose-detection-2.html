@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yoga Pose Detection</title>
+    <style>
+        /* ... existing styles ... */
+        .video-container {
+            margin: 0 auto;
+            position: relative;
+            width: 640px;
+            max-width: 100%;
+            height: 480px;
+            border: 3px solid #6fb07f;
+            border-radius: 10px;
+            overflow: hidden;
+            background-color: #000;
+        }
+        
+        #videoFeed {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Yoga Pose Detection</h1>
+        <div class="target-pose" id="targetPose"></div>
+    </div>
+    
+    <div class="video-container">
+        <img id="videoFeed" src="/video_feed" alt="Video Feed">
+    </div>
+    
+    <div class="controls">
+        <button id="backButton">Back to Pose Selection</button>
+    </div>
+    
+    <div class="loading" id="loading"></div>
+    
+    <script>
+        // Display the target pose
+        const selectedPose = sessionStorage.getItem('selectedPose');
+        const poseData = {
+            tree: "Tree Pose",
+            cobra: "Cobra Pose",
+            downwardDog: "Downward Dog Pose",
+            chair: "Chair Pose",
+            noPose: "No Pose",
+            shoulderStand: "Shoulder Stand",
+            triangle: "Triangle Pose",
+            warrior: "Warrior Pose"
+        };
+        
+        document.getElementById('targetPose').innerText = `Detecting: ${poseData[selectedPose]}`;
+        
+        // Back button functionality
+        document.getElementById('backButton').addEventListener('click', () => {
+            // Stop the detection
+            fetch('/stop_detection')
+                .then(response => response.text())
+                .then(data => {
+                    console.log(data);
+                    window.location.href = '/';
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    window.location.href = '/';
+                });
+        });
+    </script>
+</body>
+</html>

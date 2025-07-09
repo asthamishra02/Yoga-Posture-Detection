@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yoga Pose Selector</title>
+    <style>
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            margin: 0;
+            background-color: #f7f7f7;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: #333;
+            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('background-image.jpg') center/cover;
+        }
+
+        .container {
+            display: flex;
+            max-width: 900px;
+            width: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.4);
+            text-align: left;
+            color: #ffffff;
+            align-items: center;
+            gap: 40px;
+        }
+
+        .left-section {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .right-section {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+        }
+
+        h2 {
+            font-size: 26px;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        select {
+            width: 100%;
+            padding: 12px 15px;
+            font-size: 16px;
+            border: 1px solid #555;
+            border-radius: 8px;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: black;
+            margin-bottom: 20px;
+        }
+
+        .pose-title {
+            font-size: 24px;
+            font-weight: bold;
+            text-decoration: underline;
+            margin-bottom: 10px;
+        }
+
+        .pose-description {
+            font-size: 15px;
+            line-height: 1.7;
+            color: #e0e0e0;
+            margin-bottom: 20px;
+            flex-grow: 1;
+        }
+
+        .pose-image {
+            width: 300px;
+            height: 300px;
+            border-radius: 8px;
+            object-fit: cover;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+            display: none;
+        }
+
+        .start-button {
+            display: none;
+            width: 100%;
+            padding: 12px 15px;
+            font-size: 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: auto;
+        }
+
+        .start-button:hover {
+            background-color: #45a049;
+        }
+
+        .pose-info-container {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="left-section">
+            <h2>Select a Yoga Pose</h2>
+            <select id="poseDropdown" onchange="displayPoseInfo()">
+                <option value="">-- Choose a Pose --</option>
+                <option value="tree">Tree Pose</option>
+                <option value="cobra">Cobra Pose</option>
+                <option value="downwardDog">Downward Dog Pose</option>
+                <option value="chair">Chair Pose</option>
+                <option value="noPose">No Pose</option>
+                <option value="shoulderStand">Shoulder Stand</option>
+                <option value="triangle">Triangle Pose</option>
+                <option value="warrior">Warrior Pose</option>
+            </select>
+            
+            <div class="pose-info-container">
+                <div id="poseTitle" class="pose-title"></div>
+                <p id="poseDescription" class="pose-description"></p>
+                <button id="startButton" class="start-button" onclick="startPoseDetection()">Start Pose</button>
+            </div>
+        </div>
+        <div class="right-section">
+            <img id="poseImage" class="pose-image" src="" alt="Yoga Pose Image">
+        </div>
+    </div>
+
+    <script>
+        const poseData = {
+            tree: {
+                name: "Tree Pose",
+                description: "The Tree Pose, or Vrksasana, is a balancing posture that embodies the essence of stability and focus. To enter this pose, stand tall with your feet hip-width apart, grounding yourself firmly into the earth. Shift your weight onto one leg, bending the opposite knee to bring the foot to the inner thigh or calf (avoiding the knee). As you find your balance, engage your core and draw your shoulders back, opening your chest. Bring your palms together at your heart center or raise them overhead, fingers extended towards the sky. The gaze should be fixed on a point in front of you to help maintain balance. Breathe deeply, embracing the strength and grace of the pose, which mimics the rooted yet upward-reaching qualities of a tree.",
+                image: "treepose.jpg"
+            },
+            cobra: {
+                name: "Cobra Pose",
+                description: "The Cobra Pose, or Bhujangasana, is a gentle backbend that stretches the chest, shoulders, and abdomen while strengthening the spine. To perform this pose, lie face down on your mat with your legs extended behind you, feet hip-width apart, and the tops of your feet pressing into the ground. Place your hands under your shoulders, elbows close to your body. As you inhale, press into your hands to lift your chest off the floor, keeping your pelvis grounded. Your elbows can remain slightly bent, and you should keep your gaze forward or slightly upward, opening your chest. Hold the pose for several breaths, feeling the gentle stretch along your spine and the opening in your heart center. To release, exhale as you lower your chest back to the mat. This pose not only improves flexibility and posture but also helps alleviate stress and fatigue.",
+                image: "cobrapose.jpg"
+            },
+            downwardDog: {
+                name: "Downward Dog Pose",
+                description: "In a traditional yoga Downward Dog pose (Adho Mukha Svanasana), the practitioner begins on all fours, aligning their wrists under the shoulders and knees under the hips. Then, they lift their hips and straighten their arms and legs, forming an inverted 'V' shape with the body. The hands press firmly into the ground, fingers spread wide, while the heels work towards touching the floor, though flexibility varies. The back remains long and straight, and the head relaxes between the arms, gazing towards the feet. This pose stretches the hamstrings, calves, and spine, and it also strengthens the arms and shoulders, providing a gentle inversion that encourages blood flow to the head.",
+                image: "dogpose.jpg"
+            },
+            chair: {
+                name: "Chair Pose",
+                description: "The Chair Pose, or Utkatasana, is a powerful yoga posture that engages the entire body, particularly the legs, core, and back. To enter this pose, stand with your feet together and arms by your sides. Inhale deeply, then exhale as you bend your knees, lowering your hips as if sitting back into an imaginary chair. Keep your thighs parallel to the ground, and ensure your knees do not extend beyond your toes. As you hold the pose, raise your arms overhead with palms facing each other or together, elongating the spine and reaching through your fingertips. Maintain a steady gaze forward, breathing deeply and evenly, while feeling the strength and stability that this pose cultivates.",
+                image: "chairpose.jpg"
+            },
+            noPose: {
+                name: "No Pose",
+                description: "No-pose yoga, often referred to as 'restorative yoga' or 'gentle yoga,' emphasizes relaxation and mindfulness over traditional postures. This practice focuses on creating a calming environment where participants can connect deeply with their breath and body without the pressure to perform specific poses. Instead of structured movements, practitioners might use props like blankets, bolsters, and straps to support their bodies in gentle stretches and seated positions. The intention is to promote relaxation, reduce stress, and cultivate a sense of inner peace.",
+                image: "nopose.jpg"
+            },
+            shoulderStand: {
+                name: "Shoulder Stand",
+                description: "The Shoulder Stand, or Sarvangasana, is an inversion pose that involves lifting the legs and torso upward while supporting the back with the hands. This pose requires balance and control, encouraging blood circulation and a calm mind.",
+                image: "shoulderstand.jpg"
+            },
+            triangle: {
+                name: "Triangle Pose",
+                description: "Triangle Pose, or Trikonasana, involves extending one arm toward the ground and the other toward the sky in a wide-legged stance. This powerful stretching pose targets the legs, hips, and spine, helping to open the body and encourage flexibility.",
+                image: "trianglepose.jpg"
+            },
+            warrior: {
+                name: "Warrior Pose",
+                description: "The Warrior Yoga Pose, or Virabhadrasana, is a powerful standing pose that embodies strength and stability. To enter the pose, start by standing tall with your feet hip-width apart. Step one foot back, keeping it firmly planted while bending the front knee at a 90-degree angle, ensuring it is directly above the ankle. Extend your arms parallel to the ground, with palms facing down, while your gaze is forward, embodying focus and determination.",
+                image: "warriorpose.jpg"
+            }
+        };
+
+        function displayPoseInfo() {
+            const poseDropdown = document.getElementById('poseDropdown');
+            const selectedPose = poseDropdown.value;
+            const startButton = document.getElementById('startButton');
+            
+            if (selectedPose && poseData[selectedPose]) {
+                document.getElementById('poseTitle').innerText = poseData[selectedPose].name;
+                document.getElementById('poseDescription').innerText = poseData[selectedPose].description;
+                const poseImage = document.getElementById('poseImage');
+                poseImage.src = poseData[selectedPose].image;
+                poseImage.style.display = 'block';
+                startButton.style.display = 'block';
+                startButton.setAttribute('data-pose', selectedPose);
+            } else {
+                document.getElementById('poseTitle').innerText = "";
+                document.getElementById('poseDescription').innerText = "";
+                document.getElementById('poseImage').style.display = 'none';
+                startButton.style.display = 'none';
+            }
+        }
+
+        function startPoseDetection() {
+            const startButton = document.getElementById('startButton');
+            const selectedPose = startButton.getAttribute('data-pose');
+            
+            // Store the selected pose in sessionStorage to use on the next page
+            sessionStorage.setItem('selectedPose', selectedPose);
+            
+            // Redirect to the pose detection page
+            window.location.href = 'pose-detection.html';
+        }
+    </script>
+</body>
+</html>
